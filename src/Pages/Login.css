@@ -1,0 +1,20 @@
+button{
+    color: rgb(0, 0, 0);
+    
+}
+button:hover{
+    background-color: #000000;
+    color: white;
+}
+.cssclass{
+    background: linear-gradient(0deg, #ff0d00, #ffe200, #03ff00, #00e9ff, #1e00ff, #b000ff, #ff00de);
+    background-size: 1400% 1400%;
+    animation: movecolor 10s linear infinite;
+    -webkit-animation: movecolor 10s linear infinite;
+}
+
+@keyframes movecolor {
+    0%{background-position:43% 0%}
+    50%{background-position:58% 100%}
+    100%{background-position:43% 0%}
+}
