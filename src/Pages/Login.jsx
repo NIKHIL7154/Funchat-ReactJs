@@ -1,16 +1,56 @@
 import React from 'react'
 import './Login.css'
+
+import {auth, provider,app} from '../fbconfig'
+// Initialize Firebase
+
+
+function signinnow(){
+  app.signInWithPopup(auth, provider)
+  .then((result) => {
+    
+
+    console.log(result)
+    
+    
+    
+    // The signed-in user info.
+    const user = result.user;
+    alert(user.email)
+    
+  }).catch((error) => {
+    
+  });
+}
+
+function currentus(){
+  var useremail = auth.currentUser
+  console.log(useremail)
+  alert(useremail.email)
+  
+  
+}
+
+function logout(){
+  
+  
+  auth.signOut().then((res)=>{
+    console.log(res)
+  }).catch((err)=>{
+    console.error(err)
+  })
+  
+  
+}
+
 const Login = () => {
   return (
     <div className='gap-6 flex flex-col justify-center items-center w-full h-[100vh]'>
-      <p className='text-3xl font-bold'>Welcome to Funchat</p>
-      <iframe className='h-[250px]' title='lottie' src="https://lottie.host/embed/398992f1-190f-47dc-b174-a4330d4c861d/Y9c2xBs1Ow.json"></iframe>
-      <div className='cssclass p-1 rounded-2xl'>
-        <button className='font-bold text-xl bg-white w-[200px] h-[40px] rounded-xl'>Sign in</button>
-
-
-      </div>
-      
+      <p className='text-xl md:text-3xl font-bold'>Welcome to Funchat</p>
+      <iframe className='h-[150px] md:h-[250px]' title='lottie' src="https://lottie.host/embed/398992f1-190f-47dc-b174-a4330d4c861d/Y9c2xBs1Ow.json"></iframe>
+      <button onClick={signinnow} className='font-bold text-sm md:text-xl w-[100px] md:w-[200px] h-[30px] md:h-[40px] rounded-md md:rounded-xl'>Sign in</button>
+      <button onClick={currentus}>click me</button>
+      <button onClick={logout}>logout</button>
     </div>
   )
 }
