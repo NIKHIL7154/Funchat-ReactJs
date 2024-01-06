@@ -1,20 +1,21 @@
 import React, { useState } from 'react'
 import Login from './Pages/Login';
+import Chat from './Pages/Chat';
 
 const Main = () => {
-    const [login, setlogin] = useState(false);
-
+    const [login, setlogin] = useState(true);
+    const [email, setemail] = useState('Not logged');
     if(login){
       return(
-        <>No logged
-        <button onClick={()=>{setlogin(!login)}}>click me</button>
+        <><Chat />
+        
         </>
       )
     }else{
       return (
         <>
-        <Login />
-        <button onClick={()=>{setlogin(!login)}}>click me</button>
+        <Login loginstate={setlogin} usermail={setemail}/>
+        
 
         </>
       )

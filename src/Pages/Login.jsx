@@ -1,49 +1,55 @@
 import React from 'react'
 import './Login.css'
-
-import {auth, provider,app} from '../fbconfig'
+import {signInWithPopup} from "firebase/auth";
+import {auth, provider} from '../fbconfig'
 // Initialize Firebase
 
 
-function signinnow(){
-  app.signInWithPopup(auth, provider)
-  .then((result) => {
-    
 
-    console.log(result)
-    
-    
-    
-    // The signed-in user info.
-    const user = result.user;
-    alert(user.email)
-    
-  }).catch((error) => {
-    
-  });
-}
 
-function currentus(){
-  var useremail = auth.currentUser
-  console.log(useremail)
-  alert(useremail.email)
-  
-  
-}
+const Login = (props) => {
 
-function logout(){
+  const {loginstate,usermail}=props;
+  function signinnow(){
+    signInWithPopup(auth, provider)
+    .then((result) => {
+      
+      loginstate(true)
+      usermail(result.user.email)
+      console.log(result)
+      
+      
+      
+      // The signed-in user info.
+      const user = result.user;
+      alert(user.email)
+      
+    }).catch((error) => {
+      
+    });
+  }
   
-  
-  auth.signOut().then((res)=>{
-    console.log(res)
-  }).catch((err)=>{
-    console.error(err)
-  })
-  
-  
-}
 
-const Login = () => {
+  function currentus(){
+    var useremail = auth.currentUser
+    console.log(useremail)
+    alert(useremail.email)
+    
+    
+  }
+  
+
+  function logout(){
+    
+    
+    auth.signOut().then((res)=>{
+      console.log(res)
+    }).catch((err)=>{
+      console.error(err)
+    })
+    
+    
+  }
   return (
     <div className='gap-6 flex flex-col justify-center items-center w-full h-[100vh]'>
       <p className='text-xl md:text-3xl font-bold'>Welcome to Funchat</p>
