@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import Chatbox from '../Components/Chatbox';
+import Personlist from '../Components/Personlist';
 var count=0
-var stopeffect=false
+
 const Chat = () => {
-    
+
     function addperson(){
         count += 1;
         let divv=document.createElement('div');
@@ -17,20 +18,20 @@ const Chat = () => {
         divv.addEventListener('click',()=>{
             setperson(namep2.innerHTML)
         })
-        document.getElementById('persons').appendChild(divv)
 
+        document.getElementById('persons').appendChild(divv)
     }
     const [person, setperson] = useState("Click on any chat to start");
     useEffect(() => {
-        if(stopeffect){
-            alert(person)
-        }
-        
+
+        alert(person)
+
+
         return () => {
-            
+
         };
     }, [person]);
-    
+
     return (
     <div className='h-[100vh] flex justify-center items-center'>
       <div className='w-[92%] h-[92%] shadd bg-red-500  shadow-black flex'>
@@ -42,10 +43,7 @@ const Chat = () => {
             </div>
             <div id='persons' className='overflow-y-scroll h-[90%] bg-orange-300'>
                 persons will appear here
-                <div className='bg-yellow-100'>
-                    <p>name</p>
-                    <p>email</p>
-                </div>
+
             </div>
         </div>
         <div className='h-full w-[50%]'>
@@ -55,7 +53,7 @@ const Chat = () => {
       </div>
 
     </div>
-    
+
   )
 }
 
