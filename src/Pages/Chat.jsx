@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Chatbox from '../Components/Chatbox';
 import Personlist from '../Components/Personlist';
+import {auth,app} from '../fbconfig'
 var count=0
 
 const Chat = () => {
