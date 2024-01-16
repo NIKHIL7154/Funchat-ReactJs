@@ -7,15 +7,15 @@ const Main = () => {
     const [email, setemail] = useState('Not logged');
     if(login){
       return(
-        <><Chat />
-        
+        <>
+        <Chat />
+
         </>
       )
     }else{
       return (
         <>
         <Login loginstate={setlogin} usermail={setemail}/>
-        
 
         </>
       )
