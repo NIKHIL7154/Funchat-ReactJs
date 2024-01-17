@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Chatbox from '../Components/Chatbox';
 import Personlist from '../Components/Personlist';
 import {auth,app} from '../fbconfig'
+
 var count=0
 
 const Chat = () => {
@@ -22,17 +23,21 @@ const Chat = () => {
 
         document.getElementById('persons').appendChild(divv)
     }
-    const [person, setperson] = useState("Click on any chat to start");
+    const [person, setperson] = useState("001");
     useEffect(() => {
+        if(person==='001'){
 
-        alert(person)
+        }else{
+            alert(person)
+        }
+        
 
 
         return () => {
 
         };
     }, [person]);
-
+    const myarr=[<Personlist/>,<Personlist/>,<Personlist/>]
     return (
     <div className='h-[100vh] flex justify-center items-center'>
       <div className='w-[92%] h-[92%] shadd bg-red-500  shadow-black flex'>
@@ -44,6 +49,7 @@ const Chat = () => {
             </div>
             <div id='persons' className='overflow-y-scroll h-[90%] bg-orange-300'>
                 persons will appear here
+                {myarr}
 
             </div>
         </div>
