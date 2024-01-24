@@ -1,7 +1,7 @@
 import React from 'react'
 
-const Chatbox = (props) => {
-    const {datum} =props
+const Chatbox = ({datum}) => {
+    
   return (
     <div className='overflow-y-scroll h-[100%]'>
       <div className='h-[90%]'>{datum}</div>

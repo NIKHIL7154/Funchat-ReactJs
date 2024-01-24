@@ -3,48 +3,27 @@ import Chatbox from '../Components/Chatbox';
 import Personlist from '../Components/Personlist';
 import {auth,app} from '../fbconfig'
 
-var count=0
-
 const Chat = () => {
+    
+    const [person, setperson] = useState("000");
 
-    function addperson(){
-        count += 1;
-        let divv=document.createElement('div');
-        divv.className='bg-yellow-100 mt-[5px] pointr'
-        let namep=document.createElement('p')
-        namep.innerHTML='Hello'
-        let namep2=document.createElement('p')
-        namep2.innerHTML='email'+count
-        divv.appendChild(namep)
-        divv.appendChild(namep2)
-        divv.addEventListener('click',()=>{
-            setperson(namep2.innerHTML)
-        })
-
-        document.getElementById('persons').appendChild(divv)
+   // callback function for person set from user
+    function callperson(data) {
+        setperson(data)
     }
-    const [person, setperson] = useState("001");
-    useEffect(() => {
-        if(person==='001'){
+    var myarr=[]
 
-        }else{
-            alert(person)
-        }
-        
+    for(let i=0;i<6;i++){
+        myarr.push(<Personlist id={`PR${i}`} dete={person} sperson={callperson}/>)
+    }
 
-
-        return () => {
-
-        };
-    }, [person]);
-    const myarr=[<Personlist/>,<Personlist/>,<Personlist/>]
     return (
     <div className='h-[100vh] flex justify-center items-center'>
       <div className='w-[92%] h-[92%] shadd bg-red-500  shadow-black flex'>
 
-        <div className='h-[100%] w-[50%] bg-blue-200'>
+        <div className='h-[100%] w-[40%] bg-blue-200'>
             <div className='h-[10%] bg-slate-300 flex justify-around items-center'>
-                    <button onClick={addperson}>Add person</button>
+                    <button>Add person</button>
                     <button>Logout</button>
             </div>
             <div id='persons' className='overflow-y-scroll h-[90%] bg-orange-300'>
@@ -53,7 +32,7 @@ const Chat = () => {
 
             </div>
         </div>
-        <div className='h-full w-[50%]'>
+        <div className='h-full w-[60%]'>
             <Chatbox datum={person} />
         </div>
 
