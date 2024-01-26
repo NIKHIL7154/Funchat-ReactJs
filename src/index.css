@@ -10,4 +10,18 @@
     .shadd{
         box-shadow: 0px 0px 50px 1cqmax rgba(0, 0, 0, 0.44);
     }
+
+    .scrole::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrole::-webkit-scrollbar-track {
+        background-color: rgba(0, 0, 0, 0);
+    }
+    
+    .scrole::-webkit-scrollbar-thumb {
+
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+
 }

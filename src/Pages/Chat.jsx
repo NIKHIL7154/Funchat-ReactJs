@@ -12,11 +12,9 @@ const Chat = () => {
         setperson(data)
     }
     var myarr=[]
-
-    for(let i=0;i<6;i++){
+    for(let i=0;i<10;i++){
         myarr.push(<Personlist id={`PR${i}`} dete={person} sperson={callperson}/>)
     }
-
     return (
     <div className='h-[100vh] flex justify-center items-center'>
       <div className='w-[92%] h-[92%] shadd bg-red-500  shadow-black flex'>
@@ -26,7 +24,7 @@ const Chat = () => {
                     <button>Add person</button>
                     <button>Logout</button>
             </div>
-            <div id='persons' className='overflow-y-scroll h-[90%] bg-orange-300'>
+            <div id='persons' className='overflow-y-scroll scrole h-[90%] bg-orange-300'>
                 persons will appear here
                 {myarr}
 
