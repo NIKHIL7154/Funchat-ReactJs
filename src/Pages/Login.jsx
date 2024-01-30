@@ -1,28 +1,51 @@
 import React from 'react'
 import './Login.css'
 import {signInWithPopup} from "firebase/auth";
-import {auth, provider} from '../fbconfig'
+import {auth, provider,app} from '../fbconfig'
+import { useCookies } from 'react-cookie';
+import { collection, doc, getDoc,getFirestore, setDoc } from "firebase/firestore";
 // Initialize Firebase
 
 
 
 
 const Login = (props) => {
-
+  const db = getFirestore(app);
+  const [cookies, setCookie] = useCookies(['refresh','idtoken']);
   const {loginstate,usermail}=props;
   function signinnow(){
     signInWithPopup(auth, provider)
-    .then((result) => {
+    .then(async (result) => {
       
-      loginstate(true)
-      usermail(result.user.email)
+      // loginstate(true)
+      // usermail(result.user.email)
       console.log(result)
-      
-      
-      
+      let usern=result.user
+      setCookie('refresh',result._tokenResponse.refreshToken)
+      setCookie('idtoken',result._tokenResponse.idToken)
+      var rawemail=usern.email.replace('@gmail.com','')
+      const docRef = doc(db, "users/logged/userdata/", rawemail);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        loginstate(true)
+        console.log(result)
+      } else {
+        
+        const docf=doc(db,"users/logged/userdata/",rawemail)
+        setDoc(docf,{
+          Name:usern.displayName,
+          Email:usern.email,
+          Phone:usern.phoneNumber?usern.phoneNumber:"Not given",
+          Uid:usern.uid,
+          rooms:{demo:"demo"}
+
+        }).then(console.log("Data added successfully"))
+      }
+
+
       // The signed-in user info.
-      const user = result.user;
-      alert(user.email)
+      
       
     }).catch((error) => {
       
@@ -30,10 +53,18 @@ const Login = (props) => {
   }
   
 
-  function currentus(){
-    var useremail = auth.currentUser
-    console.log(useremail)
-    alert(useremail.email)
+  async function currentus(){
+    const docRef = doc(db, "users/logged/userdata/", "yes");
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        loginstate(true)
+      } else {
+        const docf=doc(db,"users/logged/userdata/","yes")
+        setDoc(docf,{
+          Name:"result.user.name"
+        }).then(console.log("done")).catch((err)=>{console.log(err)})
+      }
     
     
   }
@@ -41,12 +72,7 @@ const Login = (props) => {
 
   function logout(){
     
-    
-    auth.signOut().then((res)=>{
-      console.log(res)
-    }).catch((err)=>{
-      console.error(err)
-    })
+    setCookie("refresh","newvalue")
     
     
   }
@@ -57,6 +83,7 @@ const Login = (props) => {
       <button onClick={signinnow} className='font-bold text-sm md:text-xl w-[100px] md:w-[200px] h-[30px] md:h-[40px] rounded-md md:rounded-xl'>Sign in</button>
       <button onClick={currentus}>click me</button>
       <button onClick={logout}>logout</button>
+      
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, GoogleAuthProvider,browserLocalPersistence,setPersistence } from "firebase/auth";
 
 
 // Import the functions you need from the SDKs you need
@@ -20,6 +20,17 @@ const firebaseConfig = {
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 export const app = initializeApp(firebaseConfig);
+const auth = getAuth();
+await setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    console.log("done persistence")
+    
+  })
+  .catch((error) => {
+    // Handle Errors here.
+    const errorCode = error.code;
+    const errorMessage = error.message;
+  });
+export {auth}
 
-export const auth = getAuth();
 export const provider = new GoogleAuthProvider();

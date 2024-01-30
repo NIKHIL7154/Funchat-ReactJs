@@ -2,12 +2,13 @@ import React, { useEffect, useRef, useState } from 'react'
 import Message from './Message'
 //import ScrollToBottom, {useScrollToBottom, useSticky } from 'react-scroll-to-bottom';
 import '../Components/Chatbox.css'
-import {app} from '../fbconfig'
-import { Timestamp, getFirestore } from "firebase/firestore";
-import { collection, addDoc,orderBy, setDoc,doc ,updateDoc,onSnapshot,getDoc,query, where,getDocs} from "firebase/firestore"; 
+import {app,auth} from '../fbconfig'
+
+import { Timestamp, getFirestore,collection, addDoc,orderBy, setDoc,doc ,updateDoc,onSnapshot,getDoc,query, where,getDocs} from "firebase/firestore";
 
 var months=["Jan","Feb","Mar","Apr","May","June","july","Aug","Sep","Oct","Nov","Dec"]
-
+var counts=0
+var secount=2
 function nowww(){
   
   let dt = new Date();
@@ -15,40 +16,47 @@ function nowww(){
   let AmOrPm = hours >= 12 ? 'PM' : 'AM';
   hours = (hours % 12) || 12;
   let minutes = dt.getMinutes() ;
-  let finalTime = hours + ":" + minutes + " " + AmOrPm+" "+dt.getDate()+" "+months[dt.getMonth()]
+  let newhours=hours<10?("0"+hours):hours
+  let newmin =minutes<10?("0"+minutes):minutes
+  let finalTime = newhours + ":" + newmin + " " + AmOrPm+" "+dt.getDate()+" "+months[dt.getMonth()]
   return finalTime
 }
+
 const Chatbox = ({datum}) => {
-  
-  const [msgs, setmsgs] = useState("");
+  const curusername=auth.currentUser.displayName
+  const [msgs, setmsgs] = useState([]);
   const msginput = useRef('hello')
   const scrollers = useRef(null)
   const db = getFirestore(app);
   const nameref = useRef('')
 
-  
-
   useEffect(() => {
+    
     const q = query(collection(db, "users","room/messages"), orderBy("time"));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const unsubscribe = onSnapshot(q,(snapshot) => {
+      
       snapshot.docChanges().forEach(async (change) => {
+        counts++
+        secount++
         let reff=change.doc.data()
+        
         if (change.type === "added") {
           let del=""
-          if(reff.Name==="Nikhil"){
+          if(reff.Name===curusername){
             del="onn"
           }else{
             del="inn"
           }
+          
           setmsgs(prevArray=>[...prevArray,<Message timeee={reff.nutime} deliver={del} msg={reff.msg}/>])
           
         }
 
       });
-    setTimeout(() => {
-      scrollers.current.scrollTop = scrollers.current.scrollHeight;
-    }, 200);
-});
+      setTimeout(() => {
+        scrollers.current.scrollTop = scrollers.current.scrollHeight;
+      }, 200);
+    });
 
   },[]);
   
@@ -56,7 +64,9 @@ const Chatbox = ({datum}) => {
     <div id='chatboxscroller' className='h-[100%]'>
       <div ref={scrollers} className={`h-[90%] overflow-y-scroll scrole`}>
         {datum}
-        {msgs}
+        {msgs.map((data)=>{
+          return data
+        })}
         
       </div>
       <div className='h-[10%] flex items-center justify-evenly'>
@@ -68,8 +78,8 @@ const Chatbox = ({datum}) => {
             try {
               const frankDocRef = collection(db, "users", "room/messages");
               
-              const final=addDoc(frankDocRef, {
-                Name:nameref.current.value,
+              const  final=await addDoc(frankDocRef, {
+                Name:curusername,
                 msg:currentmsg,
                 time:Timestamp.now(),
                 nutime:nowww()
