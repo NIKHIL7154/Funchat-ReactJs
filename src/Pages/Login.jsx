@@ -18,7 +18,7 @@ const Login = (props) => {
     .then(async (result) => {
       
       // loginstate(true)
-      // usermail(result.user.email)
+      usermail(result.user.email)
       console.log(result)
       let usern=result.user
       setCookie('refresh',result._tokenResponse.refreshToken)
@@ -29,7 +29,7 @@ const Login = (props) => {
 
       if (docSnap.exists()) {
         loginstate(true)
-        console.log(result)
+        
       } else {
         
         const docf=doc(db,"users/logged/userdata/",rawemail)

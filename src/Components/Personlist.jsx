@@ -24,8 +24,8 @@ const Personlist = ({datum,sperson,id}) => {
         </div>
         <div className='mx-[25px]'>
           
-          {id[1]} hel 
-          {id[0]}
+          {id[1]}
+
         </div>
     </div>
   )

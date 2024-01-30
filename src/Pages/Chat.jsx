@@ -3,6 +3,7 @@ import Chatbox from '../Components/Chatbox';
 import Personlist from '../Components/Personlist';
 import {auth,app} from '../fbconfig'
 import { Timestamp, getFirestore,collection, addDoc,orderBy, setDoc,doc ,updateDoc,onSnapshot,getDoc,query, where,getDocs} from "firebase/firestore";
+import Loadingdiag from '../Components/Loadingdiag';
 const Chat = () => {
     const db = getFirestore(app);
     const [person, setperson] = useState("PR1");
@@ -62,7 +63,7 @@ const Chat = () => {
         <div className='h-[100%] w-[40%] bg-blue-200'>
             <div className='h-[10%] bg-slate-300 flex justify-around items-center'>
                     <button>Add person</button>
-                    <button onClick={()=>{setpersonslist([45,84,12])}}>Logout</button>
+                    <button onClick={()=>{auth.signOut()}}>Logout</button>
             </div>
             <div id='persons' className='overflow-y-scroll scrole h-[90%] bg-orange-300'>
                 {personslist.map((data)=>{
@@ -77,7 +78,7 @@ const Chat = () => {
         </div>
 
       </div>
-
+      <Loadingdiag/>
     </div>
 
   )

@@ -7,8 +7,6 @@ import {app,auth} from '../fbconfig'
 import { Timestamp, getFirestore,collection, addDoc,orderBy, setDoc,doc ,updateDoc,onSnapshot,getDoc,query, where,getDocs} from "firebase/firestore";
 
 var months=["Jan","Feb","Mar","Apr","May","June","july","Aug","Sep","Oct","Nov","Dec"]
-var counts=0
-var secount=2
 function nowww(){
   
   let dt = new Date();
@@ -24,44 +22,56 @@ function nowww(){
 
 const Chatbox = ({datum}) => {
   const curusername=auth.currentUser.displayName
+  const curuseruid=auth.currentUser.uid
   const [msgs, setmsgs] = useState([]);
   const msginput = useRef('hello')
   const scrollers = useRef(null)
   const db = getFirestore(app);
   const nameref = useRef('')
+  
+  const [firstrender,setfirstrender]=useState(false)
 
   useEffect(() => {
+    if(datum!=="PR1"){
+    setfirstrender(true)}
     
-    const q = query(collection(db, "users","room/messages"), orderBy("time"));
+  }, [datum]);
+
+  useEffect(() => {
+    scrollers.current.innerHTML=''
+    const q = query(collection(db, "users","room/",datum), orderBy("time"));
     const unsubscribe = onSnapshot(q,(snapshot) => {
       
       snapshot.docChanges().forEach(async (change) => {
-        counts++
-        secount++
+        
         let reff=change.doc.data()
         
         if (change.type === "added") {
           let del=""
-          if(reff.Name===curusername){
+          if(reff.useruid===curuseruid){
             del="onn"
           }else{
             del="inn"
           }
-          
           setmsgs(prevArray=>[...prevArray,<Message timeee={reff.nutime} deliver={del} msg={reff.msg}/>])
-          
         }
 
       });
       setTimeout(() => {
         scrollers.current.scrollTop = scrollers.current.scrollHeight;
       }, 200);
+
+      
     });
 
-  },[]);
+    return () => unsubscribe()
+
+  },[datum]);
   
   return (
     <div id='chatboxscroller' className='h-[100%]'>
+      
+      {/* <div className='flex h-[90%] justify-center items-center'>Select any chat to see messages</div> */}
       <div ref={scrollers} className={`h-[90%] overflow-y-scroll scrole`}>
         {datum}
         {msgs.map((data)=>{
@@ -76,10 +86,11 @@ const Chatbox = ({datum}) => {
             
             msginput.current.value=''
             try {
-              const frankDocRef = collection(db, "users", "room/messages");
+              const frankDocRef = collection(db, "users", "room/",datum);
               
               const  final=await addDoc(frankDocRef, {
                 Name:curusername,
+                useruid:curuseruid,
                 msg:currentmsg,
                 time:Timestamp.now(),
                 nutime:nowww()
@@ -92,10 +103,7 @@ const Chatbox = ({datum}) => {
             
           }} className='bg-blue-500 p-3 text-white font-bold rounded-xl'>Send</button>
       </div>
-      <button onClick={()=>{
-        //scrollers.current.scrollTop = scrollers.current.scrollHeight;
-      }}>hello</button>
-      <input type="text" placeholder="enter name" ref={nameref}/>
+      
       
     </div>
     
