@@ -5,6 +5,7 @@ import '../Components/Chatbox.css'
 import {app,auth} from '../fbconfig'
 
 import { Timestamp, getFirestore,collection, addDoc,orderBy, setDoc,doc ,updateDoc,onSnapshot,getDoc,query, where,getDocs} from "firebase/firestore";
+import Loadingdiag from './Loadingdiag';
 
 var months=["Jan","Feb","Mar","Apr","May","June","july","Aug","Sep","Oct","Nov","Dec"]
 function nowww(){
@@ -20,7 +21,7 @@ function nowww(){
   return finalTime
 }
 
-const Chatbox = ({datum}) => {
+const Chatbox = ({datum,setloading}) => {
   const curusername=auth.currentUser.displayName
   const curuseruid=auth.currentUser.uid
   const [msgs, setmsgs] = useState([]);
@@ -29,23 +30,19 @@ const Chatbox = ({datum}) => {
   const db = getFirestore(app);
   const nameref = useRef('')
   
-  const [firstrender,setfirstrender]=useState(false)
-
+  
   useEffect(() => {
-    if(datum!=="PR1"){
-    setfirstrender(true)}
-    
+    setloading(true)
   }, [datum]);
+  
 
   useEffect(() => {
-    scrollers.current.innerHTML=''
+    datum==='PR1'?console.log("Initialization"):scrollers.current.innerHTML=''
     const q = query(collection(db, "users","room/",datum), orderBy("time"));
     const unsubscribe = onSnapshot(q,(snapshot) => {
-      
+
       snapshot.docChanges().forEach(async (change) => {
-        
         let reff=change.doc.data()
-        
         if (change.type === "added") {
           let del=""
           if(reff.useruid===curuseruid){
@@ -58,51 +55,59 @@ const Chatbox = ({datum}) => {
 
       });
       setTimeout(() => {
-        scrollers.current.scrollTop = scrollers.current.scrollHeight;
-      }, 200);
+        datum==='PR1'?console.log("Initialization"):scrollers.current.scrollTop = scrollers.current.scrollHeight;
+        setloading(false)
+      }, 100);
 
-      
     });
-
-    return () => unsubscribe()
+    return () => {
+      unsubscribe()
+    };
 
   },[datum]);
   
+ 
+
   return (
+    
     <div id='chatboxscroller' className='h-[100%]'>
-      
-      {/* <div className='flex h-[90%] justify-center items-center'>Select any chat to see messages</div> */}
-      <div ref={scrollers} className={`h-[90%] overflow-y-scroll scrole`}>
-        {datum}
-        {msgs.map((data)=>{
-          return data
-        })}
-        
-      </div>
-      <div className='h-[10%] flex items-center justify-evenly'>
-          <input placeholder='Enter message here.....' ref={msginput} type="text" className='px-5 h-[70%] w-[80%]'/>
-          <button onClick={async ()=>{
-            let currentmsg=msginput.current.value
-            
-            msginput.current.value=''
-            try {
-              const frankDocRef = collection(db, "users", "room/",datum);
+      {datum==='PR1'?
+      <div className='flex h-[100%] justify-center items-center'>Select any chat to see messages</div>
+      :
+      <div className='h-[100%]'>
+            <div ref={scrollers} className={`h-[90%] overflow-y-scroll scrole`}>
+              {datum}
+              {msgs.map((data)=>{
+                return data
+              })}
               
-              const  final=await addDoc(frankDocRef, {
-                Name:curusername,
-                useruid:curuseruid,
-                msg:currentmsg,
-                time:Timestamp.now(),
-                nutime:nowww()
-              });
-              console.log("Document written with ID: ", final.id);
-            } catch (e) {
-              console.error("Error adding document: ", e);
-            }
-            
-            
-          }} className='bg-blue-500 p-3 text-white font-bold rounded-xl'>Send</button>
-      </div>
+            </div>
+            <div className='h-[10%] flex items-center justify-evenly'>
+                <input placeholder='Enter message here.....' ref={msginput} type="text" className='px-5 h-[70%] w-[80%]'/>
+                <button onClick={async ()=>{
+                  let currentmsg=msginput.current.value
+                  
+                  msginput.current.value=''
+                  try {
+                    const frankDocRef = collection(db, "users", "room/",datum);
+                    
+                    const  final=await addDoc(frankDocRef, {
+                      Name:curusername,
+                      useruid:curuseruid,
+                      msg:currentmsg,
+                      time:Timestamp.now(),
+                      nutime:nowww()
+                    });
+                    console.log("Document written with ID: ", final.id);
+                  } catch (e) {
+                    console.error("Error adding document: ", e);
+                  }
+                  
+                  
+                }} className='bg-blue-500 p-3 text-white font-bold rounded-xl'>Send</button>
+            </div>
+      </div>}
+      
       
       
     </div>

@@ -21,7 +21,7 @@ const firebaseConfig = {
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 export const app = initializeApp(firebaseConfig);
 const auth = getAuth();
-await setPersistence(auth, browserLocalPersistence)
+setPersistence(auth, browserLocalPersistence)
   .then(() => {
     console.log("done persistence")
     

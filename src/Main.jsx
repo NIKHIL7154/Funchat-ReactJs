@@ -6,9 +6,9 @@ import {onAuthStateChanged } from "firebase/auth";
 
 
 const Main = () => {
-    const [login, setlogin] = useState(false);
+    const [login, setlogin] = useState(true);
     const [email, setemail] = useState('Not logged');
-    useEffect(() => {
+    /* useEffect(() => {
       onAuthStateChanged(auth, (user) => {
         if (user) {
           // User is signed in, see docs for a list of available properties
@@ -22,7 +22,8 @@ const Main = () => {
         }
       });
       
-    }, []);
+    }, []); */
+    
     if(login){
       return(
         <>
