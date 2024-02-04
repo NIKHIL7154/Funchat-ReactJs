@@ -6,10 +6,20 @@ import {onAuthStateChanged } from "firebase/auth";
 
 
 const Main = () => {
-    const [login, setlogin] = useState(true);
-    const [email, setemail] = useState('Not logged');
-    /* useEffect(() => {
-      onAuthStateChanged(auth, (user) => {
+    const [login, setlogin] = useState(false);
+    const [forlogindone, setforlogindone] = useState('Not logged');
+    useEffect(() => {
+      if(auth.currentUser!=null){
+        setforlogindone("Loginhasdone")
+      }
+      return () => {
+        
+      };
+    }, []);
+    useEffect(() => {
+      
+      if(forlogindone==="Loginhasdone"){
+        const authstatelist = onAuthStateChanged(auth, (user) => {
         if (user) {
           // User is signed in, see docs for a list of available properties
           // https://firebase.google.com/docs/reference/js/auth.user
@@ -21,8 +31,12 @@ const Main = () => {
           setlogin(false)
         }
       });
+      }
+      return () => {
+        
+      }
       
-    }, []); */
+    }, [forlogindone]);
     
     if(login){
       return(
@@ -34,7 +48,7 @@ const Main = () => {
     }else{
       return (
         <>
-        <Login loginstate={setlogin} usermail={setemail}/>
+        <Login logindone={setforlogindone}/>
 
         </>
       )

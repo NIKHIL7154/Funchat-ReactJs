@@ -16,11 +16,20 @@ const firebaseConfig = {
   appId: "1:378929997525:web:445766ae4f17eafcf0a45c",
   measurementId: "G-RMZQRFTR6X"
 };
-
+function getCurrentUser(auth) {
+  return new Promise((resolve, reject) => {
+     const unsubscribe = auth.onAuthStateChanged(user => {
+        unsubscribe();
+        resolve(user);
+     }, reject);
+  });
+}
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 export const app = initializeApp(firebaseConfig);
-const auth = getAuth();
+const auth = await getAuth();
+const mydata= await getCurrentUser(auth)
+export {mydata}
 setPersistence(auth, browserLocalPersistence)
   .then(() => {
     console.log("done persistence")
@@ -28,8 +37,7 @@ setPersistence(auth, browserLocalPersistence)
   })
   .catch((error) => {
     // Handle Errors here.
-    const errorCode = error.code;
-    const errorMessage = error.message;
+    
   });
 export {auth}
 
