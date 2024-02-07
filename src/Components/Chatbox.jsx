@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Message from './Message'
-import ScrollToBottom, { useScrollToBottom, useSticky } from 'react-scroll-to-bottom';
+
 import '../Components/Chatbox.css'
 import { app, auth } from '../fbconfig'
 
 import { /* Timestamp, onSnapshot , updateDoc, collection , query, where, getDocs , addDoc, orderBy, */ query,orderBy,collection,onSnapshot,addDoc,Timestamp,getFirestore} from "firebase/firestore";
-
+var counter=0
 
 var months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "july", "Aug", "Sep", "Oct", "Nov", "Dec"]
 function nowww() {
@@ -30,7 +30,33 @@ const Chatbox = (props) => {
   const { datum, setloading} = props
   const db = getFirestore(app);
 
+  async function sendthemessage(){
+    let currentmsg = msginput.current.value
+    if(currentmsg===''){
+      return
+    }
+    msginput.current.value = ''
+    try {
+      const frankDocRef = collection(db, "users", "room/", datum);
 
+      await addDoc(frankDocRef, {
+        Name: curusername,
+        useruid: curuseruid,
+        msg: currentmsg,
+        time: Timestamp.now(),
+        nutime: nowww()
+      });
+
+    } catch (e) {
+
+    }
+  }
+  function check(event){
+    if(event.key==='Enter'){
+      sendthemessage()
+    }
+    
+  }
 
   useEffect(() => {
       if(datum!=='PR1'){
@@ -47,7 +73,7 @@ const Chatbox = (props) => {
       return
     }
     const unsubscribe = onSnapshot(q, (snapshot) => {
-
+      
       snapshot.docChanges().forEach(async (change) => {
         let reff = change.doc.data()
         if (change.type === "added") {
@@ -57,7 +83,8 @@ const Chatbox = (props) => {
           } else {
             del = "inn"
           }
-          setmsgs(prevArray => [...prevArray, <Message timeee={reff.nutime} deliver={del} msg={reff.msg} />])
+          counter++;
+          setmsgs(prevArray => [...prevArray, <Message key={change.doc.id} timeee={reff.nutime} deliver={del} msg={reff.msg} />])
         }
 
       });
@@ -71,7 +98,7 @@ const Chatbox = (props) => {
       unsubscribe()
     };
 
-  }, [datum]);
+  }, [datum,curuseruid,db,setloading]);
 
   return (
 
@@ -92,27 +119,8 @@ const Chatbox = (props) => {
 
           </div>
           <div className='h-[8%] md:h-[10%] flex items-center justify-evenly'>
-            <input placeholder='Enter message here.....' ref={msginput} type="text" className='rounded-lg border-[1px] border-black px-5 h-[70%] w-[80%]' />
-            <button onClick={async () => {
-              let currentmsg = msginput.current.value
-              msginput.current.value = ''
-              try {
-                const frankDocRef = collection(db, "users", "room/", datum);
-
-                await addDoc(frankDocRef, {
-                  Name: curusername,
-                  useruid: curuseruid,
-                  msg: currentmsg,
-                  time: Timestamp.now(),
-                  nutime: nowww()
-                });
-
-              } catch (e) {
-
-              }
-
-
-            }} className='bg-blue-500 h-[80%] p-2 text-white font-bold rounded-xl'>Send</button>
+            <input onKeyDown={check} placeholder='Enter message here.....' ref={msginput} type="text" className='rounded-lg border-[1px] border-black px-5 h-[70%] w-[80%]' />
+            <button onClick={sendthemessage} className='bg-blue-500 h-[80%] p-2 text-white font-bold rounded-xl'>Send</button>
           </div>
         </div>}
 

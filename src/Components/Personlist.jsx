@@ -13,12 +13,11 @@ const Personlist = ({datum,sperson,id}) => {
 
   }, [datum,id])
   let photourl=id[2]
-  
+
   return (
     <div className={`bg-[#ebebeb8e] w-[100%] py-2 flex justify-center items-center`}>
     <div onClick={()=>{
       sperson(id[0])
-
       }} className={`${bgchng?'bg-[#28478565]':'bg-[#fff] person'} borderperson rounded-xl p-3 w-[95%] pointr flex justify-start items-center`}>
         <div className={`rounded-[50%] w-[50px] h-[50px] bg-blue-300 overflow-hidden flex justify-center items-center`}>
           <img src={photourl} alt='Jai ho' className=''/>
@@ -30,7 +29,7 @@ const Personlist = ({datum,sperson,id}) => {
         </div>
     </div>
     </div>
-    
+
   )
 }
 

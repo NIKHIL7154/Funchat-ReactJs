@@ -32,7 +32,7 @@ const mydata= await getCurrentUser(auth)
 export {mydata}
 setPersistence(auth, browserLocalPersistence)
   .then(() => {
-    console.log("done persistence")
+    //done
     
   })
   .catch((error) => {

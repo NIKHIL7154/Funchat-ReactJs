@@ -6,7 +6,7 @@ const Dialogbox = (props) => {
   const emailref = useRef('')
   const errorref = useRef('')
   const db = getFirestore(app);
-  const {addperson}=props
+  const {addperson,checker,setitnow}=props
   useEffect(() => {
     
     return () => {
@@ -18,7 +18,7 @@ const Dialogbox = (props) => {
     if(curremail===''){
       errorref.current.innerHTML="Please provide an email"
     }else if(curremail.includes('@gmail.com')){
-      errorref.current.innerHTML="Email verified"
+      errorref.current.innerHTML="Please wait while we process data."
       let rawemail=curremail.replace("@gmail.com","")
       const docref=doc(db,"users/logged/userdata/"+rawemail)
       const datachecker=await getDoc(docref);
@@ -48,7 +48,11 @@ const Dialogbox = (props) => {
             Targetname:targetname,
             Photourl:datachecker.data().Photourl
           }).then(()=>{
-            errorref.current.innerHTML="Data added successfully"
+            errorref.current.innerHTML="Person added succesfully"
+            setTimeout(()=>{
+              setitnow(!checker)
+              addperson(false)
+            },700)
           }).catch(()=>{errorref.current.innerHTML="Error in adding data"})
         }
 

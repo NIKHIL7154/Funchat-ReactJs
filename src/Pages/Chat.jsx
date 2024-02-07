@@ -3,7 +3,7 @@ import Chatbox from '../Components/Chatbox';
 import Personlist from '../Components/Personlist';
 
 import {auth,app} from '../fbconfig'
-import {getFirestore, collection, doc, query, getDocs } from "firebase/firestore";
+import {getFirestore, collection, query, getDocs } from "firebase/firestore";
 import Loadingdiag from '../Components/Loadingdiag';
 import Dialogbox from '../Components/Dialogbox';
 
@@ -24,8 +24,9 @@ const Chat = () => {
   /* function callperson(data) {
       setperson(data)
   } */
+  const [addpersonchecker,setitnow]=useState(false)
   
-  var myarray=[]
+  
   
   
   
@@ -40,7 +41,7 @@ const Chat = () => {
     async function mydone(){
       const qsnap= await getDocs(myquery)
       let jaku=0
-      
+      var myarray=[]
       await qsnap.forEach((doc)=>{
         jaku=jaku+10
         let tname=doc.data().Targetname
@@ -53,10 +54,10 @@ const Chat = () => {
       
     }
     mydone()
-    console.log(personslist)
+    
     
   }
-  }, [rawemail,db]);
+  }, [rawemail,db,addpersonchecker]);
 
   useEffect(() => {
     if(curwidth<700 && person!=='PR1'){
@@ -71,7 +72,7 @@ const Chat = () => {
 
     <div className='h-[100vh] flex justify-center items-center'>
       {loading?<Loadingdiag/>:<></>}
-      {addperson?<Dialogbox addperson={setaddperson}/>:<></>}
+      {addperson?<Dialogbox checker={addpersonchecker} setitnow={setitnow} addperson={setaddperson}/>:<></>}
       <div className='w-[92%] flex-col shadd rounded-2xl overflow-hidden h-[92%] bg-[#dfdfdf] flex'>
         <div className='h-[8%] md:h-[10%] bg-[#284785] flex justify-between items-center'>
           
