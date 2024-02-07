@@ -68,10 +68,10 @@ const Chatbox = (props) => {
 
 
   useEffect(() => {
-    if (datum !== 'PR1') {
-      if (!newmemberss) {
+    if (datum !== 'PR1' && !newmemberss) {
+      
         scrollers.current.innerHTML = ''
-      }
+      
     }
     const q = query(collection(db, "users", "room/", datum), orderBy("time"));
     if (datum === 'PR1') {
@@ -98,20 +98,19 @@ const Chatbox = (props) => {
         });
       }
       setTimeout(() => {
-        if (datum !== 'PR1') {
-          if (!newmemberss) {
-            scrollers.current.scrollTop = scrollers.current.scrollHeight;
-          }
+        if (datum !== 'PR1' && !newmemberss) {
+          console.log('ho rha h')
+          scrollers.current.scrollTop = scrollers.current.scrollHeight;
         }
         setloading(false)
-      }, 200);
+      }, 100);
 
     });
     return () => {
       unsubscribe()
     };
 
-  }, [datum, curuseruid, db, setloading]);
+  }, [datum, curuseruid, db, setloading,newmemberss]);
 
   return (
 
