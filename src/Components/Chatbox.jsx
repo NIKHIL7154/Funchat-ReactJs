@@ -4,8 +4,8 @@ import Message from './Message'
 import '../Components/Chatbox.css'
 import { app, auth } from '../fbconfig'
 
-import { /* Timestamp, onSnapshot , updateDoc, collection , query, where, getDocs , addDoc, orderBy, */ query,orderBy,collection,onSnapshot,addDoc,Timestamp,getFirestore} from "firebase/firestore";
-var counter=0
+import { /* Timestamp, onSnapshot , updateDoc, collection , query, where, getDocs , addDoc, orderBy, */ query, orderBy, collection, onSnapshot, addDoc, Timestamp, getFirestore } from "firebase/firestore";
+
 
 var months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "july", "Aug", "Sep", "Oct", "Nov", "Dec"]
 function nowww() {
@@ -24,15 +24,16 @@ function nowww() {
 const Chatbox = (props) => {
   const curusername = auth.currentUser.displayName
   const curuseruid = auth.currentUser.uid
-  const [msgs, setmsgs] = useState([<Message timeee={45} deliver={'inn'} msg={'hello guys'} />]);
+  const [msgs, setmsgs] = useState([]);
   const msginput = useRef('hello')
   const scrollers = useRef(null)
-  const { datum, setloading} = props
+  const { datum, setloading } = props
   const db = getFirestore(app);
+  const [newmemberss, setitnow] = useState(true)
 
-  async function sendthemessage(){
+  async function sendthemessage() {
     let currentmsg = msginput.current.value
-    if(currentmsg===''){
+    if (currentmsg === '') {
       return
     }
     msginput.current.value = ''
@@ -51,54 +52,66 @@ const Chatbox = (props) => {
 
     }
   }
-  function check(event){
-    if(event.key==='Enter'){
+  function check(event) {
+    if (event.key === 'Enter') {
       sendthemessage()
     }
-    
+
   }
 
   useEffect(() => {
-      if(datum!=='PR1'){
-        setloading(true)
-      }
-    
-  }, [datum,setloading]);
+    if (datum !== 'PR1') {
+      setloading(true)
+    }
+
+  }, [datum, setloading]);
 
 
   useEffect(() => {
-    datum === 'PR1' ? console.log("") : scrollers.current.innerHTML = ''
+    if (datum !== 'PR1') {
+      if (!newmemberss) {
+        scrollers.current.innerHTML = ''
+      }
+    }
     const q = query(collection(db, "users", "room/", datum), orderBy("time"));
-    if(datum === 'PR1'){
+    if (datum === 'PR1') {
       return
     }
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      
-      snapshot.docChanges().forEach(async (change) => {
-        let reff = change.doc.data()
-        if (change.type === "added") {
-          let del = ""
-          if (reff.useruid === curuseruid) {
-            del = "onn"
-          } else {
-            del = "inn"
+      if (snapshot.empty) {
+        setitnow(true)
+      } else {
+        setitnow(false)
+        snapshot.docChanges().forEach(async (change) => {
+          let reff = change.doc.data()
+          if (change.type === "added") {
+            let del = ""
+            if (reff.useruid === curuseruid) {
+              del = "onn"
+            } else {
+              del = "inn"
+            }
+            
+            setmsgs(prevArray => [...prevArray, <Message key={change.doc.id} timeee={reff.nutime} deliver={del} msg={reff.msg} />])
           }
-          counter++;
-          setmsgs(prevArray => [...prevArray, <Message key={change.doc.id} timeee={reff.nutime} deliver={del} msg={reff.msg} />])
-        }
 
-      });
+        });
+      }
       setTimeout(() => {
-        datum === 'PR1' ? console.log("") : scrollers.current.scrollTop = scrollers.current.scrollHeight;
+        if (datum !== 'PR1') {
+          if (!newmemberss) {
+            scrollers.current.scrollTop = scrollers.current.scrollHeight;
+          }
+        }
         setloading(false)
-      }, 100);
+      }, 200);
 
     });
     return () => {
       unsubscribe()
     };
 
-  }, [datum,curuseruid,db,setloading]);
+  }, [datum, curuseruid, db, setloading]);
 
   return (
 
@@ -108,7 +121,20 @@ const Chatbox = (props) => {
       }} className='block md:hidden text-5xl absolute right-[10%] mt-[15px]'>🔙</div>
        */}
       {datum === 'PR1' ?
-        <div className='flex h-[100%] justify-center items-center'>Select any chat to see messages</div>
+        <div className='flex h-[100%] justify-center items-center'>Select any chat to see messages</div> : <></>}
+
+
+
+      {newmemberss ?
+        <div className='h-[100%]'>
+        <div className='flex h-[92%] md:h-[90%] justify-center items-center'>Send a message to start conversation.</div>
+
+        <div className='h-[8%] md:h-[10%] flex items-center justify-evenly'>
+          <input onKeyDown={check} placeholder='Enter message here.....' ref={msginput} type="text" className='rounded-lg border-[1px] border-black px-5 h-[70%] w-[80%]' />
+          <button onClick={sendthemessage} className='bg-blue-500 h-[80%] p-2 text-white font-bold rounded-xl'>Send</button>
+        </div>
+      </div>
+
         :
         <div className='h-[100%]'>
           <div ref={scrollers} className={`h-[92%] md:h-[90%] overflow-y-scroll scrole`}>

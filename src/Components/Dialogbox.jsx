@@ -65,7 +65,7 @@ const Dialogbox = (props) => {
     }
   }
   return (
-    <div onClick={()=>{/* addperson(false) */}} className='flex justify-center items-center absolute bg-[#0000004f] h-[100%] w-[100%]'>
+    <div onClick={()=>{/* addperson(false) */}} className='z-10 flex justify-center items-center absolute bg-[#0000004f] h-[100%] w-[100%]'>
       <div className='flex justify-start items-center flex-col overflow-hidden w-[300px] h-[300px] md:w-[400px] md:h-[400px] bg-white rounded-xl'>
         <p onClick={()=>{addperson(false)}} className='cursor-pointer ml-[250px] md:ml-[350px] mt-[9px] absolute text-xl w-[30px] h-[30px]' >❌</p>
         <img className='md:w-[220px] w-[120px] md:h-[220px]' src={addpersonico} alt="Add person" />
